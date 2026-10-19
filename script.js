@@ -3,7 +3,31 @@ const inputBtn= document.getElementById("input-btn")
 const inputEl=document.getElementById("input-el")
 const ulEl=document.getElementById("ul-el");
 const delEl=document.getElementById("delete-btn")
-const leadsFromLocalStorage=JSON.parse(localStorage.getItem("myLeads"))
+const tabEl=document.getElementById("tab-btn")
+let leadsFromLocalStorage = [];
+try {
+    const savedLeads = JSON.parse(localStorage.getItem("myLeads"));
+    if (Array.isArray(savedLeads)) {
+        leadsFromLocalStorage = savedLeads;
+    }
+} catch {
+    localStorage.removeItem("myLeads");
+}
+
+tabEl.addEventListener("click",function(){
+    // chrome.tabs.query({active:true, currentWindow:true}, function(tabs){
+    //     let activeTab=tabs[0]
+    //     let activeTabId=activeTab.id
+    // })
+
+    chrome.tabs.query({active:true, currentWindow:true}, function(tabs){
+        myLeads.push(tabs[0].url)
+        localStorage.setItem("myLeads", JSON.stringify(myLeads))
+        render(myLeads)
+    })
+})
+
+
 
 if(leadsFromLocalStorage){
     myLeads=leadsFromLocalStorage
@@ -12,7 +36,7 @@ if(leadsFromLocalStorage){
 
 delEl.addEventListener("dblclick", function(){
     myLeads.length=0
-    localStorage.clear()
+    localStorage.removeItem("myLeads")
     ulEl.innerHTML=""
 })
 
